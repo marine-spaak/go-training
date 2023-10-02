@@ -78,15 +78,12 @@ func (l *linkedList) findNodeByValue(v int) *node {
 
 	} else {
 		// CAS 2 - LISTE NON VIDE
-		current := l.head         // Je pars du début
-		for current.next != nil { // Tant que je ne suis pas arrivée à la fin
+		// Initialiser une variable dans une boucle FOR si on ne s'en sert pas ailleurs
+		for current := l.head; current.next != nil; current = current.next {
 			if current.data == v { // Je check si la data du noeud vaut ce que je cherche
 				return current // Si c'est le cas, je renvoie le noeud actuel
-			} else {
-				current = current.next // Sinon, je passe au noeud suivant
 			}
 		}
-
 		// Si aucun n'a marché, je renvoie nil
 		return nil
 	}
@@ -114,6 +111,13 @@ func (l *linkedList) prepend(n *node) {
 	}
 }
 
+// PREPEND (création d'un nouveau noeud à partir d'un entier)
+func (l *linkedList) intPrepend(v int) {
+	n := &node{} // Le & crée un pointeur
+	n.data = v
+	l.prepend(n)
+}
+
 // METHODE APPEND (ajouter un noeud en fin de liste)
 func (l *linkedList) append(n *node) {
 	if l.head == nil {
@@ -129,11 +133,22 @@ func (l *linkedList) append(n *node) {
 	}
 }
 
+// APPEND (création d'un nouveau noeud à partir d'un entier)
+func (l *linkedList) intAppend(v int) {
+	n := &node{} // Le & crée un pointeur
+	n.data = v
+	l.append(n)
+}
+
 // ============================================
 // SUPPRIMER UN NOEUD EN FONCTION DE SA VALEUR
 // ============================================
 
 func (l *linkedList) deleteNodeByValue(v int) {
+	// CAS 1 - LISTE VIDE
+	if l.head == nil {
+		return
+	}
 	// Le 1er noeud a-t-il la valeur v ?
 	if l.head.data == v {
 		// Si oui, je le retire et "head" devient le second noeud
@@ -163,18 +178,16 @@ func main() {
 	myList := linkedList{}
 	node1 := &node{data: 49}
 	node2 := &node{data: 18}
-	node3 := &node{data: 16}
 	node4 := &node{data: 11}
 	node5 := &node{data: 7}
-	node6 := &node{data: 2}
 
 	myList.prepend(node1)
 	myList.prepend(node2)
-	myList.prepend(node3)
+	myList.intPrepend(16)
 
 	myList.append(node4)
 	myList.append(node5)
-	myList.append(node6)
+	myList.intAppend(2)
 
 	myList.printListData()
 
@@ -206,4 +219,7 @@ func main() {
 	myList.deleteNodeByValue(2)
 	fmt.Println("Ma liste en ayant retiré le 1er et dernier noeud (par leurs valeurs) :")
 	myList.printListData()
+
+	emptyList := linkedList{}
+	emptyList.deleteNodeByValue(2)
 }
